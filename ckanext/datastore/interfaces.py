@@ -1,6 +1,16 @@
 import ckan.plugins.interfaces as interfaces
 
 
+class IStore(interfaces.Interface):
+    def datastore_create(self, context, data_dict):
+        pass
+
+    def datastore_upsert(self, context, data_dict):
+        pass
+
+    def datastore_delete(self, context, data_dict):
+        pass
+
 class IDatastore(interfaces.Interface):
     '''Allow modifying Datastore queries'''
 

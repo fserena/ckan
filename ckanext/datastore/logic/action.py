@@ -9,6 +9,7 @@ import ckan.plugins as p
 import ckanext.datastore.db as db
 import ckanext.datastore.logic.schema as dsschema
 import ckanext.datastore.helpers as datastore_helpers
+import ckanext.datastore.interfaces as interfaces
 
 log = logging.getLogger(__name__)
 _get_or_bust = logic.get_or_bust
@@ -136,6 +137,11 @@ def datastore_create(context, data_dict):
         data_dict['private'] = True
 
     result = db.create(context, data_dict)
+
+    for plugin in p.PluginImplementations(interfaces.IStore):
+        # TODO: Link result with the previous one
+        plugin.datastore_create(context, data_dict)
+
     result.pop('id', None)
     result.pop('private', None)
     result.pop('connection_url')
@@ -206,6 +212,11 @@ def datastore_upsert(context, data_dict):
         ))
 
     result = db.upsert(context, data_dict)
+
+    for plugin in p.PluginImplementations(interfaces.IStore):
+        # TODO: Link result with the previous one
+        plugin.datastore_upsert(context, data_dict)
+
     result.pop('id', None)
     result.pop('connection_url')
     return result
@@ -256,6 +267,12 @@ def datastore_delete(context, data_dict):
         ))
 
     result = db.delete(context, data_dict)
+
+    for plugin in p.PluginImplementations(interfaces.IStore):
+        # TODO: Link result with the previous one
+        plugin.datastore_delete(context, data_dict)
+
+
     result.pop('id', None)
     result.pop('connection_url')
     return result
